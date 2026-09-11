@@ -24,12 +24,7 @@ namespace YtDownloader
             EnsureFfmpegConfigured();
         }
 
-        /// <summary>
-        /// O processo atual pode ter sido iniciado antes do FFmpeg entrar no PATH
-        /// (ex.: logo após "winget install ffmpeg", sem reiniciar o app/IDE).
-        /// Como fallback, procura o executável nas pastas padrão do WinGet e do
-        /// diretório da própria aplicação, apontando o FFMpegCore diretamente para ele.
-        /// </summary>
+        
         private static void EnsureFfmpegConfigured()
         {
             try
@@ -63,8 +58,7 @@ namespace YtDownloader
             }
             catch
             {
-                // Se a busca falhar, seguimos com o comportamento padrão do FFMpegCore
-                // (procurar "ffmpeg" no PATH), que já gera uma mensagem de erro clara.
+              
             }
         }
 
@@ -118,7 +112,7 @@ namespace YtDownloader
 
                     if (muxedStreams.Any())
                     {
-                        // Formato antigo do YouTube: um único arquivo já traz vídeo e áudio juntos.
+                    
                         var streamInfo = muxedStreams.GetWithHighestVideoQuality();
                         string filePath = GetUniqueFilePath(safeTitle, "mp4");
 
@@ -128,8 +122,6 @@ namespace YtDownloader
                     }
                     else
                     {
-                        // A maioria dos vídeos atuais só oferece vídeo e áudio separados:
-                        // baixamos os dois e unimos com FFmpeg.
                         var videoOnlyStreams = streamManifest.GetVideoOnlyStreams();
                         var videoStreamInfo = videoOnlyStreams.Where(s => s.Container == Container.Mp4).GetWithHighestVideoQuality()
                             ?? videoOnlyStreams.GetWithHighestVideoQuality();
@@ -238,7 +230,7 @@ namespace YtDownloader
             }
             catch
             {
-                // Falha ao limpar temporário não deve interromper o fluxo principal.
+            
             }
         }
 
