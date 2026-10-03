@@ -31,4 +31,9 @@ dotnet test
 $env:YTD_INTEGRATION=1; dotnet test --filter IntegrationTests   # downloads reais
 dotnet run --project src/YoutubeDownloader.App
 dotnet publish src/YoutubeDownloader.App -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o artifacts/win-x64
+# executável do release no GitHub (autocontido: quem baixa não precisa do .NET)
+dotnet publish src/YoutubeDownloader.App/YoutubeDownloader.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o artifacts/release
+gh release create vX.Y.Z -R Wendel4444/YoutubeVideoDownloader --target master --latest <exe> <zip>
 ```
+
+Repositório: https://github.com/Wendel4444/YoutubeVideoDownloader (releases em /releases/latest). Ao lançar versão nova, suba `<Version>` em `Directory.Build.props`.
