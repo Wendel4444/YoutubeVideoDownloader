@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Paleta escura (padrão), um único acento. -->
+    <Color x:Key="Color.Background">#0F1115</Color>
+    <Color x:Key="Color.Sidebar">#12151A</Color>
+    <Color x:Key="Color.Surface">#171A20</Color>
+    <Color x:Key="Color.SurfaceRaised">#1F232B</Color>
+    <Color x:Key="Color.Border">#252A33</Color>
+    <Color x:Key="Color.Track">#2A2F39</Color>
+    <Color x:Key="Color.TextPrimary">#ECEEF2</Color>
+    <Color x:Key="Color.TextSecondary">#A0A8B6</Color>
+    <Color x:Key="Color.TextMuted">#6C7483</Color>
+    <Color x:Key="Color.Accent">#5B8CFF</Color>
+    <Color x:Key="Color.AccentSubtle">#1D2740</Color>
+    <Color x:Key="Color.AccentMuted">#34528F</Color>
+    <Color x:Key="Color.Warning">#F2B544</Color>
+    <Color x:Key="Color.Danger">#F26D6D</Color>
+    <Color x:Key="Color.Success">#3DD68C</Color>
+    <Color x:Key="Color.Shadow">#000000</Color>
+
+    <SolidColorBrush x:Key="Brush.Background" Color="{StaticResource Color.Background}" />
+    <SolidColorBrush x:Key="Brush.Sidebar" Color="{StaticResource Color.Sidebar}" />
+    <SolidColorBrush x:Key="Brush.Surface" Color="{StaticResource Color.Surface}" />
+    <SolidColorBrush x:Key="Brush.SurfaceRaised" Color="{StaticResource Color.SurfaceRaised}" />
+    <SolidColorBrush x:Key="Brush.Border" Color="{StaticResource Color.Border}" />
+    <SolidColorBrush x:Key="Brush.Track" Color="{StaticResource Color.Track}" />
+    <SolidColorBrush x:Key="Brush.TextPrimary" Color="{StaticResource Color.TextPrimary}" />
+    <SolidColorBrush x:Key="Brush.TextSecondary" Color="{StaticResource Color.TextSecondary}" />
+    <SolidColorBrush x:Key="Brush.TextMuted" Color="{StaticResource Color.TextMuted}" />
+    <SolidColorBrush x:Key="Brush.Accent" Color="{StaticResource Color.Accent}" />
+    <SolidColorBrush x:Key="Brush.AccentSubtle" Color="{StaticResource Color.AccentSubtle}" />
+    <SolidColorBrush x:Key="Brush.AccentMuted" Color="{StaticResource Color.AccentMuted}" />
+    <SolidColorBrush x:Key="Brush.AccentHover" Color="#7AA2FF" />
+    <SolidColorBrush x:Key="Brush.AccentPressed" Color="#4A76E0" />
+    <SolidColorBrush x:Key="Brush.OnAccent" Color="#0B1020" />
+    <SolidColorBrush x:Key="Brush.Warning" Color="{StaticResource Color.Warning}" />
+    <SolidColorBrush x:Key="Brush.Danger" Color="{StaticResource Color.Danger}" />
+    <SolidColorBrush x:Key="Brush.Success" Color="{StaticResource Color.Success}" />
+    <SolidColorBrush x:Key="Brush.Input" Color="#13161B" />
+    <SolidColorBrush x:Key="Brush.Scrim" Color="#B3080A0D" />
+    <DropShadowEffect x:Key="Shadow.Drawer" BlurRadius="28" ShadowDepth="0" Opacity="0.55" Color="{StaticResource Color.Shadow}" />
+
+    <!-- Cores por tipo de download (selo de vídeo e áudio). -->
+    <SolidColorBrush x:Key="Brush.Kind.Video" Color="#5B8CFF" />
+    <SolidColorBrush x:Key="Brush.Kind.Audio" Color="#3CC6C1" />
+</ResourceDictionary>

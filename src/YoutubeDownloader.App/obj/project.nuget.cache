@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "dmKCke72uNc=",
+  "success": true,
+  "projectFilePath": "c:\\Users\\dooms\\OneDrive\\Documentos\\download video youtube\\YoutubeDownloader\\src\\YoutubeDownloader.App\\YoutubeDownloader.App_tmjm0252_wpftmp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dooms\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.2\\communitytoolkit.mvvm.8.4.2.nupkg.sha512",
+    "C:\\Users\\dooms\\.nuget\\packages\\qrcoder\\1.8.0\\qrcoder.1.8.0.nupkg.sha512",
+    "C:\\Users\\dooms\\.nuget\\packages\\serilog\\4.3.0\\serilog.4.3.0.nupkg.sha512",
+    "C:\\Users\\dooms\\.nuget\\packages\\serilog.sinks.file\\7.0.0\\serilog.sinks.file.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

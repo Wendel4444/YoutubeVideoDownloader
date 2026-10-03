@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/YoutubeDownloader.App/YoutubeDownloader.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/YoutubeDownloader.Tests/YoutubeDownloader.Tests.csproj" />
+  </Folder>
+</Solution>

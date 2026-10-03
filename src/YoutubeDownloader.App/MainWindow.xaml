@@ -1,0 +1,97 @@
+<Window x:Class="YoutubeDownloader.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:YoutubeDownloader.App.ViewModels"
+        xmlns:views="clr-namespace:YoutubeDownloader.App.Views"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        Title="YouTube Downloader"
+        Width="1180" Height="800" MinWidth="900" MinHeight="600"
+        Icon="/Assets/app.ico"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource Brush.Background}"
+        FontFamily="{StaticResource Font.UI}"
+        UseLayoutRounding="True"
+        AllowDrop="True">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DownloadsViewModel}">
+            <views:DownloadsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="232" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Background="{StaticResource Brush.Sidebar}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="14,24,14,16">
+                <StackPanel DockPanel.Dock="Top" Margin="10,0,10,28">
+                    <TextBlock Text="YouTube Downloader" Style="{StaticResource Text.Title}" />
+                    <TextBlock Text="Vídeos e áudios em boa qualidade" Style="{StaticResource Text.Caption}" Margin="0,3,0,0" />
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="10,12,10,0">
+                    <TextBlock Text="{Binding ToolsSummary}" Style="{StaticResource Text.Caption}" />
+                    <TextBlock Text="Arraste um link para a janela ou use Ctrl+V" Style="{StaticResource Text.Caption}" FontSize="11"
+                               TextWrapping="Wrap" TextTrimming="None" Margin="0,4,0,0" />
+                </StackPanel>
+
+                <ListBox ItemsSource="{Binding Navigation}" SelectedItem="{Binding SelectedNav}" Style="{StaticResource NavList}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:NavItem}">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding Shortcut}" Style="{StaticResource Text.Caption}" FontSize="11" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding Name}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Página atual -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Focusable="False" />
+
+        <!-- Aviso que some sozinho -->
+        <Border Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="24,0,24,24" MaxWidth="640"
+                Background="{StaticResource Brush.SurfaceRaised}" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1"
+                CornerRadius="10" Padding="16,10" Effect="{StaticResource Shadow.Drawer}"
+                Visibility="{Binding Toast, Converter={StaticResource Visible}}">
+            <TextBlock Text="{Binding Toast}" Style="{StaticResource Text.Body}" FontSize="13" TextWrapping="Wrap" TextTrimming="None" />
+        </Border>
+
+        <!-- Preparação: ferramentas que faltam na primeira execução -->
+        <Grid Grid.ColumnSpan="2" Background="{StaticResource Brush.Scrim}" Visibility="{Binding IsSetupOpen, Converter={StaticResource Visible}}">
+            <Border Style="{StaticResource Card}" Width="500" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{StaticResource Brush.Surface}">
+                <StackPanel>
+                    <TextBlock Text="Preparar o YouTube Downloader" Style="{StaticResource Text.Title}" FontSize="20" Margin="0,0,0,16" />
+                    <TextBlock Text="{Binding SetupText}" Style="{StaticResource Text.Label}" TextWrapping="Wrap" TextTrimming="None" LineHeight="20" />
+
+                    <StackPanel Margin="0,20,0,0" Visibility="{Binding SetupStep, Converter={StaticResource Visible}}">
+                        <TextBlock Text="{Binding SetupStep}" Style="{StaticResource Text.Caption}" Margin="0,0,0,6" />
+                        <ProgressBar Value="{Binding SetupProgress}" Maximum="100" />
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding SetupError}" Foreground="{StaticResource Brush.Danger}" Style="{StaticResource Text.Caption}"
+                               TextWrapping="Wrap" TextTrimming="None" Margin="0,14,0,0"
+                               Visibility="{Binding SetupError, Converter={StaticResource Visible}}" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,26,0,0">
+                        <Button Content="Agora não" Style="{StaticResource Button.Ghost}" Margin="0,0,8,0" Command="{Binding SkipSetupCommand}"
+                                IsEnabled="{Binding IsPreparing, Converter={StaticResource InverseBool}}" />
+                        <Button Content="Baixar e preparar" Style="{StaticResource Button.Primary}" Command="{Binding PrepareCommand}" IsDefault="True" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

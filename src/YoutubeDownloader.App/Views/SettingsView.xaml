@@ -1,0 +1,177 @@
+<UserControl x:Class="YoutubeDownloader.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:YoutubeDownloader.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+             d:DesignWidth="950" d:DesignHeight="900">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="40,36,40,40" MaxWidth="860" HorizontalAlignment="Left">
+            <TextBlock Text="Configurações" Style="{StaticResource Text.Display}" />
+            <TextBlock Text="Preferências salvas só neste computador." Style="{StaticResource Text.Label}" Margin="0,6,0,24" />
+
+            <!-- Downloads -->
+            <TextBlock Text="DOWNLOADS" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Pasta de destino" Style="{StaticResource Text.Field}" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Alterar" Margin="8,0,0,0" Command="{Binding ChooseOutputFolderCommand}" />
+                        <TextBox Text="{Binding OutputFolder, Mode=OneWay}" IsReadOnly="True" />
+                    </DockPanel>
+
+                    <Grid Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Nome do arquivo" Style="{StaticResource Text.Field}" />
+                            <ComboBox ItemsSource="{Binding FileNames}" SelectedItem="{Binding SelectedFileName}" DisplayMemberPath="Name" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Downloads ao mesmo tempo" Style="{StaticResource Text.Field}" />
+                            <ComboBox ItemsSource="{Binding ParallelOptions}" SelectedItem="{Binding MaxParallel}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Text="Idiomas das legendas" Style="{StaticResource Text.Field}" Margin="0,18,0,6" />
+                    <TextBox Text="{Binding SubtitleLanguages, UpdateSourceTrigger=LostFocus}" Tag="pt.*,en.*" />
+                    <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" TextTrimming="None" Margin="0,6,0,0"
+                               Text="Códigos separados por vírgula. &quot;pt.*&quot; pega português do Brasil e de Portugal; &quot;all&quot; pega todas." />
+                </StackPanel>
+            </Border>
+
+            <!-- Vídeos com restrição -->
+            <TextBlock Text="VÍDEOS COM RESTRIÇÃO" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Cookies do navegador" Style="{StaticResource Text.Field}" />
+                    <ComboBox ItemsSource="{Binding CookieBrowsers}" SelectedItem="{Binding SelectedCookies}" DisplayMemberPath="Name" Width="260" HorizontalAlignment="Left" />
+                    <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" TextTrimming="None" Margin="0,8,0,0"
+                               Text="Use quando o YouTube pedir login: vídeos com restrição de idade, só para membros ou o aviso &quot;confirme que você não é um robô&quot;. O app lê a sessão do navegador escolhido, onde você precisa estar logado no YouTube. Nada é enviado para outro lugar. Chrome e Edge às vezes bloqueiam a leitura com o navegador aberto; o Firefox é o mais confiável." />
+                </StackPanel>
+            </Border>
+
+            <!-- Ferramentas -->
+            <TextBlock Text="FERRAMENTAS" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <StackPanel>
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Atualizar agora" Command="{Binding UpdateYtDlpCommand}" VerticalAlignment="Center" />
+                        <StackPanel Margin="0,0,16,0">
+                            <TextBlock Text="yt-dlp" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding YtDlpText}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        </StackPanel>
+                    </DockPanel>
+                    <CheckBox Content="Atualizar o yt-dlp automaticamente (uma vez por dia)" IsChecked="{Binding AutoUpdate}" Margin="0,10,0,0" />
+                    <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" TextTrimming="None" Margin="0,6,0,0"
+                               Text="O YouTube muda com frequência. Se um vídeo que funcionava passar a dar erro, atualize o yt-dlp antes de qualquer outra coisa." />
+
+                    <Border Height="1" Background="{StaticResource Brush.Border}" Margin="0,16" />
+
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="Escolher pasta" Style="{StaticResource Button.Ghost}" Margin="0,0,8,0" Command="{Binding ChooseFfmpegFolderCommand}" />
+                            <Button Content="Baixar FFmpeg" Command="{Binding InstallFfmpegCommand}" />
+                        </StackPanel>
+                        <StackPanel Margin="0,0,16,0">
+                            <TextBlock Text="FFmpeg" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding FfmpegText}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" ToolTip="{Binding FfmpegText}" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <Border Height="1" Background="{StaticResource Brush.Border}" Margin="0,16" />
+
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Baixar Deno" Command="{Binding InstallDenoCommand}" VerticalAlignment="Center"
+                                Visibility="{Binding HasJs, Converter={StaticResource Hidden}}" />
+                        <StackPanel Margin="0,0,16,0">
+                            <TextBlock Text="Runtime JavaScript" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock x:Name="JsStatus" Text="{Binding JsText}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" ToolTip="{Binding JsText}" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <StackPanel Margin="0,18,0,0" Visibility="{Binding IsBusy, Converter={StaticResource Visible}}">
+                        <TextBlock Text="{Binding BusyText}" Style="{StaticResource Text.Caption}" Margin="0,0,0,6" />
+                        <ProgressBar Value="{Binding BusyProgress}" Maximum="100" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Aparência -->
+            <TextBlock Text="APARÊNCIA" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <StackPanel>
+                    <TextBlock Text="Tema" Style="{StaticResource Text.Field}" />
+                    <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" DisplayMemberPath="Name" Width="260" HorizontalAlignment="Left" />
+                    <TextBlock Text="{Binding ThemeNotice}" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Warning}" Margin="0,8,0,0"
+                               Visibility="{Binding ThemeNotice, Converter={StaticResource Visible}}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Apoio -->
+            <TextBlock Text="APOIE O PROJETO" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Background="{StaticResource Brush.QrBackground}" CornerRadius="10" Padding="6" Margin="0,0,24,0" VerticalAlignment="Top">
+                        <Image Source="{Binding PixQr}" Width="168" Height="168" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                               ToolTip="Aponte a câmera do app do seu banco para pagar com Pix" />
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="O YouTube Downloader é gratuito" Style="{StaticResource Text.Title}" />
+                        <TextBlock Style="{StaticResource Text.Label}" TextWrapping="Wrap" TextTrimming="None" Margin="0,6,0,16"
+                                   Text="Se ele te ajuda, você pode apoiar o desenvolvimento com um Pix de qualquer valor. Escaneie o QR code com o app do seu banco ou copie o código." />
+
+                        <TextBlock Text="Chave Pix (e-mail)" Style="{StaticResource Text.Field}" />
+                        <DockPanel Margin="0,0,0,14">
+                            <Button DockPanel.Dock="Right" Content="Copiar chave" Style="{StaticResource Button.Ghost}" Margin="8,0,0,0" Command="{Binding CopyPixKeyCommand}" />
+                            <TextBox Text="{Binding PixKey, Mode=OneWay}" IsReadOnly="True" FontFamily="{StaticResource Font.Mono}" />
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Copiar Pix copia e cola" Style="{StaticResource Button.Primary}" Command="{Binding CopyPixCodeCommand}"
+                                    ToolTip="{Binding PixCode}" />
+                            <TextBlock Text="Obrigado!" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="14,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Sobre -->
+            <TextBlock Text="SOBRE" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}" Margin="0,0,0,24">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Ver licença" Command="{Binding OpenLicenseCommand}" VerticalAlignment="Center" />
+                    <StackPanel Margin="0,0,16,0">
+                        <TextBlock Text="YouTube Downloader · Licença MIT" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding AboutText}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                        <TextBlock Style="{StaticResource Text.Caption}" TextWrapping="Wrap" TextTrimming="None" Margin="0,6,0,0"
+                                   Text="Software livre: use, estude, modifique e distribua à vontade, mantendo o aviso de copyright. Fornecido &quot;como está&quot;, sem garantias. Baixe apenas conteúdo que você tem direito de baixar." />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Diagnóstico -->
+            <TextBlock Text="DIAGNÓSTICO" Style="{StaticResource Text.Section}" Margin="2,0,0,8" />
+            <Border Style="{StaticResource Card}">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Abrir logs" Command="{Binding OpenLogsCommand}" VerticalAlignment="Center" />
+                    <StackPanel Margin="0,0,16,0">
+                        <TextBlock Text="Dados do app" Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding DataFolder}" Style="{StaticResource Text.Caption}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

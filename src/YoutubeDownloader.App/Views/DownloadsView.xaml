@@ -1,0 +1,252 @@
+<UserControl x:Class="YoutubeDownloader.App.Views.DownloadsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:YoutubeDownloader.App.ViewModels"
+             mc:Ignorable="d"
+             x:Name="Root"
+             d:DataContext="{d:DesignInstance Type=vm:DownloadsViewModel}"
+             d:DesignWidth="950" d:DesignHeight="800">
+    <Grid Margin="40,36,40,28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Cabeçalho -->
+        <DockPanel Margin="0,0,0,20">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="Abrir pasta" Command="{Binding OpenFolderCommand}" ToolTip="{Binding OutputFolder}" />
+            </StackPanel>
+            <StackPanel>
+                <TextBlock Text="Baixar" Style="{StaticResource Text.Display}" />
+                <TextBlock Text="{Binding QueueSummary}" Style="{StaticResource Text.Label}" Margin="0,6,0,0" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Link -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Padding="18,16" Margin="0,0,0,16">
+            <StackPanel>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Analisar" Style="{StaticResource Button.Primary}" Margin="8,0,0,0" MinWidth="96"
+                            Command="{Binding AnalyzeCommand}" />
+                    <Button DockPanel.Dock="Right" Content="Colar" Margin="8,0,0,0" Command="{Binding PasteCommand}"
+                            ToolTip="Colar o link copiado e analisar" />
+                    <TextBox x:Name="UrlBox" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" FontSize="14" Padding="11,9"
+                             Tag="Cole o link de um vídeo, playlist ou canal (YouTube e centenas de outros sites)">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding AnalyzeCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </DockPanel>
+
+                <DockPanel Margin="2,12,0,0" Visibility="{Binding IsProbing, Converter={StaticResource Visible}}">
+                    <Button DockPanel.Dock="Right" Content="Cancelar" Style="{StaticResource Button.Ghost}" Padding="10,3" FontSize="12"
+                            Command="{Binding ClearMediaCommand}" />
+                    <TextBlock Text="Analisando o link…" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" />
+                </DockPanel>
+
+                <TextBlock Text="{Binding ProbeError}" Foreground="{StaticResource Brush.Danger}" Style="{StaticResource Text.Label}"
+                           TextWrapping="Wrap" TextTrimming="None" Margin="2,12,0,0"
+                           Visibility="{Binding ProbeError, Converter={StaticResource Visible}}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Resultado da análise e opções -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,0,0,16"
+                Visibility="{Binding HasMedia, Converter={StaticResource Visible}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Border Width="208" Height="117" CornerRadius="8" Background="{StaticResource Brush.Track}" VerticalAlignment="Top" Margin="0,0,20,0">
+                    <Border.Clip>
+                        <RectangleGeometry Rect="0,0,208,117" RadiusX="8" RadiusY="8" />
+                    </Border.Clip>
+                    <Image Source="{Binding Media.ThumbnailUrl, Converter={StaticResource Thumbnail}}" Stretch="UniformToFill" />
+                </Border>
+
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding Media.Title}" Style="{StaticResource Text.Title}" FontSize="17" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="48" />
+                    <TextBlock Text="{Binding MediaSubtitle}" Style="{StaticResource Text.Label}" Margin="0,4,0,16" />
+
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Margin="0,0,16,12">
+                            <TextBlock Text="Tipo" Style="{StaticResource Text.Field}" />
+                            <Border Style="{StaticResource Segments}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Content="Vídeo" Style="{StaticResource Segment}" GroupName="Kind"
+                                                 IsChecked="{Binding IsAudio, Converter={StaticResource InverseBool}}" />
+                                    <RadioButton Content="Só áudio" Style="{StaticResource Segment}" GroupName="Kind"
+                                                 IsChecked="{Binding IsAudio}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,16,12" Width="150">
+                            <TextBlock Text="Formato" Style="{StaticResource Text.Field}" />
+                            <ComboBox ItemsSource="{Binding Formats}" SelectedItem="{Binding SelectedFormat}" DisplayMemberPath="Name" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,16,12" Width="210" Visibility="{Binding ShowQuality, Converter={StaticResource Visible}}">
+                            <TextBlock Text="Qualidade máxima" Style="{StaticResource Text.Field}" />
+                            <ComboBox ItemsSource="{Binding Qualities}" SelectedItem="{Binding SelectedQuality}" DisplayMemberPath="Name" />
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,16,12" Width="170" Visibility="{Binding ShowAudioQuality, Converter={StaticResource Visible}}">
+                            <TextBlock Text="Qualidade do áudio" Style="{StaticResource Text.Field}" />
+                            <ComboBox ItemsSource="{Binding AudioQualities}" SelectedItem="{Binding SelectedAudioQuality}" DisplayMemberPath="Name" />
+                        </StackPanel>
+
+                        <CheckBox Content="Incluir legendas" IsChecked="{Binding EmbedSubtitles}" VerticalAlignment="Bottom" Margin="0,0,16,20"
+                                  ToolTip="Embute as legendas disponíveis (por padrão português e inglês; mude em Configurações)"
+                                  Visibility="{Binding ShowSubtitles, Converter={StaticResource Visible}}" />
+                    </WrapPanel>
+
+                    <TextBlock Text="{Binding FormatHint}" Style="{StaticResource Text.Caption}" TextWrapping="Wrap" TextTrimming="None" Margin="0,0,0,16" />
+
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="Descartar" Style="{StaticResource Button.Ghost}" Margin="0,0,8,0" Command="{Binding ClearMediaCommand}" />
+                            <Button Content="{Binding DownloadButtonText}" Style="{StaticResource Button.Primary}" MinWidth="110" Command="{Binding DownloadCommand}" />
+                        </StackPanel>
+                        <DockPanel VerticalAlignment="Center" Margin="0,0,16,0">
+                            <TextBlock DockPanel.Dock="Left" Text="Salvar em" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <Button DockPanel.Dock="Right" Content="Alterar" Style="{StaticResource Button.Ghost}" Padding="8,3" FontSize="12" Margin="6,0,0,0"
+                                    Command="{Binding ChooseFolderCommand}" />
+                            <TextBlock Text="{Binding OutputFolder}" Style="{StaticResource Text.Label}" VerticalAlignment="Center" ToolTip="{Binding OutputFolder}"
+                                       TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+                    </DockPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Fila -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Padding="0">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="18,12,12,8">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Tentar falhos de novo" Style="{StaticResource Button.Ghost}" Padding="10,4" FontSize="12" Command="{Binding RetryFailedCommand}"
+                                Visibility="{Binding HasFailed, Converter={StaticResource Visible}}" />
+                        <Button Content="Limpar finalizados" Style="{StaticResource Button.Ghost}" Padding="10,4" FontSize="12" Command="{Binding ClearFinishedCommand}"
+                                Visibility="{Binding HasFinished, Converter={StaticResource Visible}}" />
+                    </StackPanel>
+                    <TextBlock Text="FILA DE DOWNLOADS" Style="{StaticResource Text.Section}" VerticalAlignment="Center" />
+                </DockPanel>
+                <Border DockPanel.Dock="Top" Height="1" Background="{StaticResource Brush.Border}" />
+
+                <Grid>
+                    <ListBox ItemsSource="{Binding Items}" Background="Transparent" BorderThickness="0"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border Background="Transparent" BorderBrush="{StaticResource Brush.Border}" BorderThickness="0,0,0,1" Padding="18,12">
+                                                <ContentPresenter />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:DownloadItemViewModel}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="280" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Width="96" Height="54" CornerRadius="6" Background="{StaticResource Brush.Track}" Margin="0,0,14,0" VerticalAlignment="Center">
+                                        <Border.Clip>
+                                            <RectangleGeometry Rect="0,0,96,54" RadiusX="6" RadiusY="6" />
+                                        </Border.Clip>
+                                        <Image Source="{Binding ThumbnailUrl, Converter={StaticResource SmallThumbnail}}" Stretch="UniformToFill" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Body}" FontSize="13" ToolTip="{Binding Title}" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                            <Border x:Name="Badge" Style="{StaticResource Badge}" Margin="0,0,8,0">
+                                                <TextBlock x:Name="BadgeText" Text="{Binding KindText}" FontSize="10" FontWeight="SemiBold"
+                                                           Foreground="{StaticResource Brush.Kind.Video}" />
+                                            </Border>
+                                            <TextBlock Text="{Binding FormatText}" Style="{StaticResource Text.Caption}" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Error}" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Danger}"
+                                                   TextWrapping="Wrap" TextTrimming="None" Margin="0,6,0,0"
+                                                   Visibility="{Binding Error, Converter={StaticResource Visible}}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <DockPanel Margin="0,0,0,6">
+                                            <TextBlock x:Name="State" DockPanel.Dock="Right" Text="{Binding StateText}" Style="{StaticResource Text.Caption}" Margin="8,0,0,0" />
+                                            <TextBlock Text="{Binding Detail}" Style="{StaticResource Text.Caption}" ToolTip="{Binding Detail}" />
+                                        </DockPanel>
+                                        <ProgressBar x:Name="Bar" Value="{Binding Percent}" Maximum="100" Height="4" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Button Content="Abrir" Style="{StaticResource Button.Ghost}" Padding="10,5"
+                                                Command="{Binding DataContext.OpenItemCommand, ElementName=Root}" CommandParameter="{Binding}"
+                                                Visibility="{Binding IsCompleted, Converter={StaticResource Visible}}" />
+                                        <Button Content="Mostrar" Style="{StaticResource Button.Ghost}" Padding="10,5"
+                                                Command="{Binding DataContext.RevealItemCommand, ElementName=Root}" CommandParameter="{Binding}"
+                                                Visibility="{Binding IsCompleted, Converter={StaticResource Visible}}" />
+                                        <Button Content="Tentar de novo" Style="{StaticResource Button.Ghost}" Padding="10,5"
+                                                Command="{Binding DataContext.RetryItemCommand, ElementName=Root}" CommandParameter="{Binding}"
+                                                Visibility="{Binding CanRetry, Converter={StaticResource Visible}}" />
+                                        <Button Content="Cancelar" Style="{StaticResource Button.Ghost}" Padding="10,5"
+                                                Command="{Binding DataContext.CancelItemCommand, ElementName=Root}" CommandParameter="{Binding}"
+                                                Visibility="{Binding CanCancel, Converter={StaticResource Visible}}" />
+                                        <Button Content="✕" Style="{StaticResource Button.Ghost}" Padding="9,5" ToolTip="Remover da lista"
+                                                Command="{Binding DataContext.RemoveItemCommand, ElementName=Root}" CommandParameter="{Binding}"
+                                                Visibility="{Binding CanCancel, Converter={StaticResource Hidden}}" />
+                                    </StackPanel>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Kind}" Value="Audio">
+                                        <Setter TargetName="BadgeText" Property="Foreground" Value="{StaticResource Brush.Kind.Audio}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Completed">
+                                        <Setter TargetName="Bar" Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                        <Setter TargetName="State" Property="Foreground" Value="{StaticResource Brush.Success}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Failed">
+                                        <Setter TargetName="Bar" Property="Foreground" Value="{StaticResource Brush.Danger}" />
+                                        <Setter TargetName="State" Property="Foreground" Value="{StaticResource Brush.Danger}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Canceled">
+                                        <Setter TargetName="Bar" Property="Foreground" Value="{StaticResource Brush.TextMuted}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding State}" Value="Running">
+                                        <Setter TargetName="State" Property="Foreground" Value="{StaticResource Brush.TextPrimary}" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="420" Margin="0,24"
+                                Visibility="{Binding Items.Count, Converter={StaticResource Hidden}}">
+                        <TextBlock Text="Nenhum download ainda" Style="{StaticResource Text.Title}" HorizontalAlignment="Center" />
+                        <TextBlock Style="{StaticResource Text.Label}" TextAlignment="Center" TextWrapping="Wrap" TextTrimming="None" Margin="0,8,0,0"
+                                   Text="Copie o link de um vídeo e aperte Ctrl+V em qualquer lugar da janela, ou arraste o link do navegador para cá." />
+                    </StackPanel>
+                </Grid>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>
